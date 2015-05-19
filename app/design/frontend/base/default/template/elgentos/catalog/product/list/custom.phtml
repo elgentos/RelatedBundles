@@ -1,0 +1,68 @@
+<?php if($this->getItems()->getSize()): ?>
+<div class="block block-custom">
+    <div class="block-title">
+        <strong><span><?php echo $this->__('Related Bundles') ?></span></strong>
+    </div>
+    <div class="block-content">
+        <p class="block-subtitle"><?php echo $this->__('Check items to add to the cart or') ?>&nbsp;<a href="#" onclick="selectAllCustom(this); return false;"><?php echo $this->__('select all') ?></a></p>
+        <ol class="mini-products-list" id="block-custom">
+        <?php foreach($this->getItems() as $_item): ?>
+            <li class="item">
+                <?php if(!$_item->isComposite() && $_item->isSaleable()): ?>
+                    <?php if (!$_item->getRequiredOptions()): ?>
+                        <input type="checkbox" class="checkbox custom-checkbox" id="custom-checkbox<?php echo $_item->getId() ?>" name="custom_products[]" value="<?php echo $_item->getId() ?>" />
+                    <?php endif; ?>
+                <?php endif; ?>
+                <div class="product">
+                    <a href="<?php echo $_item->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_item->getName()) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(50) ?>" width="50" height="50" alt="<?php echo $this->htmlEscape($_item->getName()) ?>" /></a>
+                    <div class="product-details">
+                        <p class="product-name"><a href="<?php echo $_item->getProductUrl() ?>"><?php echo $this->htmlEscape($_item->getName()) ?></a></p>
+                        <?php echo $this->getPriceHtml($_item, true, '-custom') ?>
+                        <?php if ($this->helper('wishlist')->isAllow()) : ?>
+                            <a href="<?php echo $this->getAddToWishlistUrl($_item) ?>" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </li>
+        <?php endforeach ?>
+        </ol>
+        <script type="text/javascript">decorateList('block-custom', 'none-recursive')</script>
+    </div>
+    <script type="text/javascript">
+    //<![CDATA[
+    $$('.custom-checkbox').each(function(elem){
+        Event.observe(elem, 'click', addCustomToProduct)
+    });
+
+    var customProductsCheckFlag = false;
+    function selectAllCustom(txt){
+        if (customProductsCheckFlag == false) {
+            $$('.custom-checkbox').each(function(elem){
+                elem.checked = true;
+            });
+            customProductsCheckFlag = true;
+            txt.innerHTML="<?php echo $this->__('unselect all') ?>";
+        } else {
+            $$('.custom-checkbox').each(function(elem){
+                elem.checked = false;
+            });
+            customProductsCheckFlag = false;
+            txt.innerHTML="<?php echo $this->__('select all') ?>";
+        }
+        addCustomToProduct();
+    }
+
+    function addCustomToProduct(){
+        var checkboxes = $$('.custom-checkbox');
+        var values = [];
+        for(var i=0;i<checkboxes.length;i++){
+            if(checkboxes[i].checked) values.push(checkboxes[i].value);
+        }
+        if($('custom-products-field')){
+            $('custom-products-field').value = values.join(',');
+        }
+    }
+    //]]>
+    </script>
+</div>
+<?php endif ?>
