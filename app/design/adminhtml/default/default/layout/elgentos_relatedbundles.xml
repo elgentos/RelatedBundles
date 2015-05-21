@@ -2,9 +2,10 @@
 <layout>
     <elgentos_relatedbundles_inject_tab>
         <reference name="product_tabs">
-            <action method="addTab">
+            <action method="addTabAfter">
                 <name>custom</name>
                 <block>elgentos_relatedbundles/adminhtml_catalog_product_edit_tab</block>
+                <after>crosssell</after>
             </action>
         </reference>
     </elgentos_relatedbundles_inject_tab>
